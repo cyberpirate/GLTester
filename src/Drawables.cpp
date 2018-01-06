@@ -77,7 +77,10 @@ void LineSegmentDrawable::draw(mat4 mViewProjection) {
     // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length/2));
     // mModelMatrix = scale(mModelMatrix, vec3(1.0f, 1.0f, length*1.5f));
 
+    mModelMatrix = scale(mModelMatrix, vec3(1, 1, 0.5f));
     mModelMatrix = translate(mModelMatrix, vec3(0, 0, -1.0f));
+//    mModelMatrix = scale(mModelMatrix, vec3(1, 1, length));
+//    mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, 0.5f));
 
     mColorMod = vec3(1, -1, -1);
 

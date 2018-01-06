@@ -4,18 +4,16 @@
 
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
 #include <GL/glew.h>
-
-// Include GLFW
 #include <GLFW/glfw3.h>
-
-// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <iostream>
 #include <memory>
 #include <ctime>
 #include <chrono>
 #include <vector>
+#include "utils/glmUtils.hpp"
 #include "Drawables.h"
 
 #define WINDOW_WIDTH 1024
@@ -104,12 +102,13 @@ int main() {
         float dt = time_span.count();
 
         vec4 camPerp = vec4(cameraPos.x, 0, cameraPos.z, 1) * rotate(mat4(), glm::radians(90.0f), glm::vec3(0, 1, 0));
-
-        printf("perpLengthPerc: %0.4f\n", length(camPerp) / length(cameraPos));
+        float angle = getAngleToTop(vec3(cameraPos));
 
         //calculate camera movement
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), -vec3(camPerp));
+            if(angle > 3.14f*0.05f) {
+                cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), -vec3(camPerp));
+            }
         }
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
@@ -117,7 +116,9 @@ int main() {
         }
 
         if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(camPerp));
+            if(angle < 3.14f*0.95f) {
+                cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(camPerp));
+            }
         }
 
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
