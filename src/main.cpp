@@ -105,9 +105,11 @@ int main() {
 
         vec4 camPerp = vec4(cameraPos.x, 0, cameraPos.z, 1) * rotate(mat4(), glm::radians(90.0f), glm::vec3(0, 1, 0));
 
+        printf("perpLengthPerc: %0.4f\n", length(camPerp) / length(cameraPos));
+
         //calculate camera movement
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(camPerp));
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), -vec3(camPerp));
         }
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
@@ -115,7 +117,7 @@ int main() {
         }
 
         if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), -vec3(camPerp));
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(camPerp));
         }
 
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {

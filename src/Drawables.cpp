@@ -4,6 +4,8 @@
 
 #include "Drawables.h"
 
+using namespace glm;
+
 BoxDrawable::BoxDrawable() {
     //allocate vertex buffer
     glGenBuffers(1, &mVertexBuffer);
@@ -21,9 +23,9 @@ BoxDrawable::BoxDrawable() {
     mColorModID = glGetUniformLocation(mProgram, "colorMod");
 }
 
-void BoxDrawable::draw(glm::mat4 mViewProjection) {
+void BoxDrawable::draw(mat4 mViewProjection) {
 
-    glm::mat4 finalMatrix = mViewProjection * mModelMatrix;
+    mat4 finalMatrix = mViewProjection * mModelMatrix;
 
     glUseProgram(mProgram);
 
@@ -56,4 +58,43 @@ void BoxDrawable::draw(glm::mat4 mViewProjection) {
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+}
+
+LineSegmentDrawable::LineSegmentDrawable() :
+    BoxDrawable(),
+    wh(0.1f, 0.1f)
+{
+    
+}
+
+void LineSegmentDrawable::draw(mat4 mViewProjection) {
+
+    mat4 cModelMatrix = mModelMatrix;
+    vec3 cColorMod = mColorMod;
+
+
+    // mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, length/2));
+    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length/2));
+    // mModelMatrix = scale(mModelMatrix, vec3(1.0f, 1.0f, length*1.5f));
+
+    mModelMatrix = translate(mModelMatrix, vec3(0, 0, -1.0f));
+
+    mColorMod = vec3(1, -1, -1);
+
+    BoxDrawable::draw(mViewProjection);
+
+    // mModelMatrix = cModelMatrix;
+
+    // mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, length/2));
+    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length/2));
+    // mModelMatrix = scale(mModelMatrix, vec3(1.0f, 1.0f, length*0.1f));
+    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length*0.9f));
+
+    // mColorMod = vec3(-1, 1, -1);
+
+    // BoxDrawable::draw(mViewProjection);
+
+    mModelMatrix = cModelMatrix;
+    mColorMod = cColorMod;
+
 }

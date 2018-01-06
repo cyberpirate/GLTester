@@ -7,6 +7,8 @@
 
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <GL/glew.h>
 #include "utils/shader.hpp"
 
@@ -108,6 +110,18 @@ public:
 
 
     BoxDrawable();
+    virtual void draw(glm::mat4 mViewProjection) override;
+};
+
+class LineSegmentDrawable : public BoxDrawable {
+public:
+
+    float length = 1.0f;
+    glm::vec3 pos;
+    glm::quat rot;
+    glm::vec2 wh;
+
+    LineSegmentDrawable();
     virtual void draw(glm::mat4 mViewProjection) override;
 };
 
