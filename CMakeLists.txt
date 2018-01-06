@@ -31,10 +31,12 @@ add_subdirectory("${THIRDPARTY_DIR}/glew-2.1.0")
 add_definitions(-DGLEW_STATIC)
 #GLEW configuration end
 
+include_directories("src")
 add_executable(GLTester
-        main.cpp
-        Drawable.cpp
-        Initializer.cpp
+        src/main.cpp
+        src/Drawable.cpp
+        src/Initializer.cpp
+        src/utils/shader.cpp
 )
 
 include_directories(GLTester

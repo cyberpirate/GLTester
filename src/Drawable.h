@@ -8,6 +8,7 @@
 
 #include <glm/glm.hpp>
 #include <GL/glew.h>
+#include "utils/shader.hpp"
 
 static const GLfloat box_vertex_buffer_data[] = {
         -1.0f,-1.0f,-1.0f,
@@ -89,18 +90,23 @@ static const GLfloat box_color_buffer_data[] = {
 
 class Drawable {
 public:
-    
+
     glm::mat4 mModelMatrix;
 
-    virtual void draw(glm::vec4 mViewProjection) = 0;
+    virtual void draw(glm::mat4 mViewProjection) = 0;
 };
 
-class BoxDrawable : Drawable {
+class BoxDrawable : public Drawable {
 public:
 
+    GLuint mVertexBuffer;
+    GLuint mColorBuffer;
+    GLuint mProgram;
+    GLuint mMatrixID;
 
 
-    virtual void draw(glm::vec4 mViewProjection) override;
+    BoxDrawable();
+    virtual void draw(glm::mat4 mViewProjection) override;
 };
 
 #endif //GLTESTER_DRAWABLE_H

@@ -20,6 +20,9 @@
 
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
+#define DEG_PER_SEC 90.0f
+#define ZOOM_PER_SEC 2.0f
+
 using namespace glm;
 using namespace std::chrono;
 
@@ -61,16 +64,25 @@ int main() {
 // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    // glEnable(GL_DEPTH_TEST);
-    // glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
-    glm::mat4 mViewMatrix = glm::lookAt(
-            glm::vec3(4,3,3), // Camera is at (4,3,3), in World Space
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    vec4 cameraPos = vec4(4, 3, 3, 1);
+    mat4 mViewMatrix = lookAt(
+            vec3(
+                    cameraPos.x,
+                    cameraPos.y,
+                    cameraPos.z
+            ),
             glm::vec3(0,0,0), // and looks at the origin
             glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
     );
 
-    glm::mat4 mProjMatrix = glm::perspective(
+    mat4 mProjMatrix = glm::perspective(
             glm::radians(45.0f),  // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
             4.0f / 3.0f,          // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
             0.1f,                 // Near clipping plane. Keep as big as possible, or you'll get precision issues.
@@ -89,9 +101,60 @@ int main() {
         time_span = duration_cast<duration<double>>(t2 - t1);
         t1 = t2;
 
-        update(time_span.count());
+        float dt = time_span.count();
 
-        glm::mat4 vp = mProjMatrix * mViewMatrix;
+        vec4 camPerp = vec4(cameraPos.x, 0, cameraPos.z, 1) * rotate(mat4(), glm::radians(90.0f), glm::vec3(0, 1, 0));
+
+        //calculate camera movement
+        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(camPerp));
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(0, 1, 0));
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), -vec3(camPerp));
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            cameraPos = cameraPos * rotate(mat4(), glm::radians(DEG_PER_SEC * dt), vec3(0, -1, 0));
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            if(length(cameraPos) <= 0.5f) {
+                cameraPos = normalize(cameraPos) * 0.5f;
+            } else {
+                cameraPos = cameraPos - normalize(cameraPos)*ZOOM_PER_SEC*dt;
+            }
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+
+            if(length(cameraPos) >= 100.0f) {
+                cameraPos = normalize(cameraPos) * 100.0f;
+            } else {
+                cameraPos = cameraPos + normalize(cameraPos)*ZOOM_PER_SEC*dt;
+            }
+        }
+
+
+        mViewMatrix = lookAt(
+                vec3(
+                        cameraPos.x,
+                        cameraPos.y,
+                        cameraPos.z
+                ),
+                glm::vec3(0,0,0),
+                glm::vec3(0,1,0)
+        );
+
+        update(dt);
+
+        mat4 vp = mProjMatrix * mViewMatrix;
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for(int i = 0; i < drawables.size(); i++) {
             drawables[i]->draw( vp );
