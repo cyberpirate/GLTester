@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 #include "Drawables.h"
 
 using namespace std;
@@ -19,4 +20,11 @@ void initialize(vector<unique_ptr<Drawable>>& drawables) {
 
 void update(float dt) {
 
+    float r = originBox->mColorMod.r;
+
+    r += dt*0.5;
+
+    if(r >= 1) r = -1;
+
+    originBox->mColorMod.r = r;
 }

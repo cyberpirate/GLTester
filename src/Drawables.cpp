@@ -18,6 +18,7 @@ BoxDrawable::BoxDrawable() {
     mProgram =  LoadShaders( "assets/shaders/box.verts", "assets/shaders/box.frags" );
 
     mMatrixID = glGetUniformLocation(mProgram, "MVP");
+    mColorModID = glGetUniformLocation(mProgram, "colorMod");
 }
 
 void BoxDrawable::draw(glm::mat4 mViewProjection) {
@@ -27,6 +28,7 @@ void BoxDrawable::draw(glm::mat4 mViewProjection) {
     glUseProgram(mProgram);
 
     glUniformMatrix4fv(mMatrixID, 1, GL_FALSE, &finalMatrix[0][0]);
+    glUniform3fv(mColorModID, 1, &mColorMod[0]);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);

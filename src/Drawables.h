@@ -92,6 +92,7 @@ class Drawable {
 public:
 
     glm::mat4 mModelMatrix;
+    glm::vec3 mColorMod;
 
     virtual void draw(glm::mat4 mViewProjection) = 0;
 };
@@ -103,6 +104,7 @@ public:
     GLuint mColorBuffer;
     GLuint mProgram;
     GLuint mMatrixID;
+    GLuint mColorModID;
 
 
     BoxDrawable();
