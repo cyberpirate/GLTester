@@ -2,7 +2,7 @@
 // Created by joevi on 1/5/2018.
 //
 
-#include "Drawable.h"
+#include "Drawables.h"
 
 BoxDrawable::BoxDrawable() {
     //allocate vertex buffer

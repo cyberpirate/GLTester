@@ -34,7 +34,7 @@ add_definitions(-DGLEW_STATIC)
 include_directories("src")
 add_executable(GLTester
         src/main.cpp
-        src/Drawable.cpp
+        src/Drawables.cpp
         src/Initializer.cpp
         src/utils/shader.cpp
 )
