@@ -62,7 +62,9 @@ void BoxDrawable::draw(mat4 mViewProjection) {
 
 LineSegmentDrawable::LineSegmentDrawable() :
     BoxDrawable(),
-    wh(0.1f, 0.1f)
+    wh(0.1f, 0.1f),
+    length(2.0f),
+    tipPercent(0.1f)
 {
     
 }
@@ -72,30 +74,21 @@ void LineSegmentDrawable::draw(mat4 mViewProjection) {
     mat4 cModelMatrix = mModelMatrix;
     vec3 cColorMod = mColorMod;
 
+    mat4 lineModelMatrix;
 
-    // mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, length/2));
-    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length/2));
-    // mModelMatrix = scale(mModelMatrix, vec3(1.0f, 1.0f, length*1.5f));
+    lineModelMatrix = translate(mat4(), pos) * toMat4(rot);
 
-    mModelMatrix = scale(mModelMatrix, vec3(1, 1, 0.5f));
+    //BODY
+    mModelMatrix = scale(mModelMatrix, vec3(wh.x/2, wh.y/2, length * 0.5f * (1 - tipPercent)));
     mModelMatrix = translate(mModelMatrix, vec3(0, 0, -1.0f));
-//    mModelMatrix = scale(mModelMatrix, vec3(1, 1, length));
-//    mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, 0.5f));
+    BoxDrawable::draw(mViewProjection * lineModelMatrix);
 
-    mColorMod = vec3(1, -1, -1);
-
-    BoxDrawable::draw(mViewProjection);
-
-    // mModelMatrix = cModelMatrix;
-
-    // mModelMatrix = scale(mModelMatrix, vec3(wh.x, wh.y, length/2));
-    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length/2));
-    // mModelMatrix = scale(mModelMatrix, vec3(1.0f, 1.0f, length*0.1f));
-    // mModelMatrix = translate(mModelMatrix, vec3(0, 0, -length*0.9f));
-
-    // mColorMod = vec3(-1, 1, -1);
-
-    // BoxDrawable::draw(mViewProjection);
+    //TIP
+    mModelMatrix = cModelMatrix;
+    mModelMatrix = scale(mModelMatrix, vec3(wh.x/2, wh.y/2, length * 0.5f * tipPercent));
+    mModelMatrix = translate(mModelMatrix, vec3(0, 0, 1 - ( length * 2 * (1 / (tipPercent*2))) ));
+    mColorMod = vec3(-1, 1, -1);
+    BoxDrawable::draw(mViewProjection * lineModelMatrix);
 
     mModelMatrix = cModelMatrix;
     mColorMod = cColorMod;

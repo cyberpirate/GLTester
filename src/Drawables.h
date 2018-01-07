@@ -116,7 +116,8 @@ public:
 class LineSegmentDrawable : public BoxDrawable {
 public:
 
-    float length = 1.0f;
+    float length;
+    float tipPercent;
     glm::vec3 pos;
     glm::quat rot;
     glm::vec2 wh;
