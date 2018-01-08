@@ -5,16 +5,39 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <thread>
+#include <mutex>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Drawables.h"
 #include "utils/strUtils.h"
+#include "utils/ScopedMutex.h"
 
 using namespace std;
 using namespace glm;
 
 BoxDrawable* originBox;
 LineSegmentDrawable* cameraLine;
+
+mutex mtx;
+
+vec3 pos;
+quat rot;
+
+void read_cin() {
+
+    for (std::string line; std::getline(std::cin, line);) {
+
+        string name;
+
+        name = "pos";
+        pullFloats(name, line, &pos[0], 3);
+        name = "rot";
+        pullFloats(name, line, &rot[0], 4);
+    }
+
+}
+
 
 void initialize(vector<unique_ptr<Drawable>>& drawables) {
 
@@ -24,21 +47,14 @@ void initialize(vector<unique_ptr<Drawable>>& drawables) {
 
     drawables.push_back(unique_ptr<Drawable>(originBox));
     drawables.push_back(unique_ptr<Drawable>(cameraLine));
-
-
-    string line = "asdf: 1:1:1";
-    string name = "asdf";
-
-    pullFloats(name, line, &cameraLine->pos[0], 3);
 }
 
 void update(float dt) {
 
-//    string line;
-//    getline(std::cin, line);
+    ScopedMutex sMtx(&mtx);
 
-
-
+    cameraLine->pos = pos;
+    cameraLine->rot = rot;
 
 //    cameraLine->rot = toQuat(rotate(toMat4(cameraLine->rot), glm::radians(90.0f * dt), vec3(0, 1, 0)));
 //    cameraLine->pos.y += dt;
