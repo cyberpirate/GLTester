@@ -29,7 +29,7 @@ void initialize(vector<unique_ptr<Drawable>>& drawables) {
     string line = "asdf: 1:1:1";
     string name = "asdf";
 
-    pullFloats(name, line, &cameraLine->pos[0], 4);
+    pullFloats(name, line, &cameraLine->pos[0], 3);
 }
 
 void update(float dt) {
